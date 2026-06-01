@@ -1,9 +1,8 @@
 import os
 import serpapi
-import requests
-from bs4 import BeautifulSoup
 from strands import tool
 from typing import Dict, List
+from firecrawl import Firecrawl
 
 @tool
 def competitor_pricing_tool(
@@ -15,9 +14,9 @@ competitors: List[str]
     """
 
     try:
-        api_key = os.getenv("SERPAPI_API_KEY")
+        serp_api_key = os.getenv("SERPAPI_API_KEY")
 
-        if not api_key:
+        if not serp_api_key:
             return {
                 "status": "error",
                 "message": "SERPAPI_API_KEY environment variable is not set."
@@ -26,19 +25,13 @@ competitors: List[str]
         client = serpapi.Client()
 
         results = {}
-        pricing_keywords = [
-            "pricing",
-            "plans",
-            "subscriptions",
-            "billing",
-            "cost"
-        ]
+        
         for company in competitors:
 
             search_results = client.search({
-                "q": f"{company} {' '.join(pricing_keywords)}",
+                "q": f"{company} pricing plans",
                 "num": 5,
-                "api_key": api_key
+                "api_key": serp_api_key
             })
 
             pricing_url = None
@@ -50,7 +43,7 @@ competitors: List[str]
 
                 link = result.get("link", "")
 
-                if "pricing" in link.lower():
+                if "pricing" in link.lower() or "plan" in link.lower():
                     pricing_url = link
                     break
 
@@ -61,27 +54,27 @@ competitors: List[str]
                 continue
 
             try:
-                response = requests.get(
-                    pricing_url,
-                    timeout=10
-                )
+                firecrawl_api_key = os.getenv("FIRECRAWL_API_KEY")
+                if not firecrawl_api_key:
+                    return {
+                        "status": "error",
+                        "message": "FIRECRAWL_API_KEY not set"
+                    }
 
-                soup = BeautifulSoup(
-                    response.text,
-                    "html.parser"
-                )
 
-                page_text = soup.get_text(
-                    separator=" ",
-                    strip=True
-                )
+                app = Firecrawl(api_key=firecrawl_api_key)
 
+                result = app.scrape(pricing_url,formats=["markdown"])
+                scrape_id = result.metadata.scrape_id
+                response = app.interact(scrape_id, prompt="List the pricing ")
+                print(response.output)
+
+                app.stop_interaction(scrape_id)
                 
-
                 results[company] = {
                     "status": "success",
                     "pricing_url": pricing_url,
-                    "page_preview": page_text
+                    "pricing_data": response.output
                 }
 
 
@@ -104,9 +97,3 @@ competitors: List[str]
             "status": "error",
             "message": str(e)
         }
-
-if __name__ == "__main__":
-    # Example usage
-    competitors = ["claude", "openai", "gemini"]
-    pricing_info = competitor_pricing_tool(competitors)
-    print(pricing_info)
