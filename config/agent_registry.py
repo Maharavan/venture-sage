@@ -1,4 +1,4 @@
-# from agents.market_agent import MarketAgent
+from agents.market_agent import MarketAgent
 # from agents.competition_agent import CompetitionAgent
 # from agents.founder_agent import FounderAgent
 # from agents.finance_agent import FinanceAgent
@@ -9,7 +9,7 @@
 
 AGENT_REGISTRY = {
     "market_agent": {
-        # "instance": MarketAgent(),
+        "instance": MarketAgent(),
         "domain": "research",
         "description": (
             "Analyze TAM, SAM, SOM, market size, "
@@ -113,10 +113,10 @@ def get_enabled_agents():
     return [agent_info["instance"] for agent_info in AGENT_REGISTRY.values() if agent_info["enabled"]]
 
 
-def get_enabled_agents_with_descriptions():
+def get_enabled_agents_with_descriptions_and_stage():
     """Return a list of tuples containing agent names and descriptions for enabled agents."""
     return "\n".join(
-        f"- {agent_name}: {agent_info['description']}"
+        f"- {agent_name}: {agent_info['description']} (Stage: {agent_info['stage']})"
         for agent_name, agent_info in AGENT_REGISTRY.items()
         if agent_info["enabled"]
     )
