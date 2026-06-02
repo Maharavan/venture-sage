@@ -47,10 +47,12 @@ Return structured output only.
 
 Scoring:
 
-9-10: Weak competition, strong differentiation, high barriers to entry
-7-8: Competitive market but clear differentiation
-5-6: Moderate competition with limited differentiation
-3-4: Intense competition and weak differentiation
-1-2: Highly saturated market with little defensibility
+Use a continuous decimal range from 1.0 to 10.0.
+
+9.0-10.0: Weak competition, strong differentiation, high barriers to entry
+7.0-8.9: Competitive market but clear differentiation
+5.0-6.9: Moderate competition with limited differentiation
+3.0-4.9: Intense competition and weak differentiation
+0.0-2.9: Highly saturated market with little defensibility
 
 If information is unavailable, explicitly state that it could not be verified.

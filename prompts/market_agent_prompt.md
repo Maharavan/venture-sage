@@ -37,8 +37,9 @@ Return structured output only.
 
 Scoring:
 
-9-10: Massive market with strong growth
-7-8: Strong market opportunity
-5-6: Moderate opportunity
-3-4: Limited opportunity
-1-2: Weak market opportunity
+Use a decimal score anywhere in the continuous range from 0.0 to 10.0.
+0.0-2.9   Low Market Opportunity
+3.0-4.9   Moderate Market Opportunity
+5.0-6.9   Elevated Market Opportunity
+7.0-8.9   High Market Opportunity
+9.0-10.0 Critical Market Opportunity

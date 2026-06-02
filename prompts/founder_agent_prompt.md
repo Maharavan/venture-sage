@@ -38,8 +38,8 @@ Return structured output only.
 
 Scoring:
 
-9-10: Exceptional founder profile with proven execution and strong founder-market fit
-7-8: Strong founder profile with relevant expertise
-5-6: Average founder profile with moderate execution evidence
-3-4: Limited relevant experience or weak founder-market fit
-1-2: Significant founder risks or lack of relevant expertise
+10.0-9.0: Exceptional founder profile with proven execution and strong founder-market fit
+8.9-7.0: Strong founder profile with relevant expertise
+6.9-5.0: Average founder profile with moderate execution evidence
+4.9-3.0: Limited relevant experience or weak founder-market fit
+2.9-1.0: Significant founder risks or lack of relevant expertise
