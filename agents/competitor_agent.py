@@ -9,7 +9,7 @@ class CompetitionAnalysis(BaseModel):
     competitive_disadvantages: list[str]
     barriers_to_entry: list[str]
     competition_intensity: str
-    competition_score: float
+    competition_score: float = Field(description="Score from 0.0 to 10.0", le=10.0, ge=0.0)
     summary: str
 
 

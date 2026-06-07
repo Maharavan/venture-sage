@@ -28,4 +28,4 @@ if __name__ == "__main__":
     if not check_aws_credentials():
         exit(1)
     print("AWS credentials check passed. You can proceed with running the application.")
-    DueDiligenceWorkflow().run(startup_description="Analyze Cursor AI a startup that provides a code search tool for developers. The tool uses AI to help developers find relevant code snippets and documentation quickly, improving their productivity and efficiency.")
+    DueDiligenceWorkflow().run(startup_description="Analyze Cursor AI a startup that provides a code search tool for developers. The tool uses AI to help developers find relevant code snippets and documentation quickly, improving their productivity and efficiency so that I can invest.")

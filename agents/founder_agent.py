@@ -14,7 +14,7 @@ class FounderAnalysis(BaseModel):
     risks: list[str]
     founder_market_fit: str
     execution_capability: str
-    founder_score: float
+    founder_score: float = Field(description="Score from 0.0 to 10.0", le=10.0, ge=0.0)
     summary: str
 
 

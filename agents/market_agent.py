@@ -24,7 +24,7 @@ class MarketAnalysis(BaseModel):
         default_factory=list
     )
 
-    market_score: float
+    market_score: float = Field(description="Score from 0.0 to 10.0", le=10.0, ge=0.0)
     summary: str
 
 

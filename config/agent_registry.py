@@ -1,10 +1,10 @@
 from agents.market_agent import MarketAgent
-# from agents.competition_agent import CompetitionAgent
-# from agents.founder_agent import FounderAgent
-# from agents.finance_agent import FinanceAgent
-# from agents.risk_agent import RiskAgent
-# from agents.investment_agent import InvestmentAgent
-# from agents.reporting.memo_agent import MemoAgent
+from agents.competitor_agent import CompetitorAgent
+from agents.founder_agent import FounderAgent
+from agents.financial_agent import FinancialAgent
+from agents.risk_agent import RiskAgent
+from agents.investment_agent import InvestmentAgent
+from agents.memo_agent import MemoAgent
 
 
 AGENT_REGISTRY = {
@@ -21,7 +21,7 @@ AGENT_REGISTRY = {
     },
 
     "competition_agent": {
-        # "instance": CompetitionAgent(),
+        "instance": CompetitorAgent(),
         "domain": "research",
         "description": (
             "Analyze competitors, positioning, "
@@ -33,7 +33,7 @@ AGENT_REGISTRY = {
     },
 
     "founder_agent": {
-        # "instance": FounderAgent(),
+        "instance": FounderAgent(),
         "domain": "research",
         "description": (
             "Analyze founders, leadership team, "
@@ -45,7 +45,7 @@ AGENT_REGISTRY = {
     },
 
     "finance_agent": {
-        # "instance": FinanceAgent(),
+        "instance": FinancialAgent(),
         "domain": "research",
         "description": (
             "Analyze funding history, valuation, "
@@ -57,7 +57,7 @@ AGENT_REGISTRY = {
     },
 
     "risk_agent": {
-        # "instance": RiskAgent(),
+        "instance": RiskAgent(),
         "domain": "analysis",
         "description": (
             "Assess execution risk, market risk, "
@@ -74,7 +74,7 @@ AGENT_REGISTRY = {
     },
 
     "investment_agent": {
-        # "instance": InvestmentAgent(),
+        "instance": InvestmentAgent(),
         "domain": "analysis",
         "description": (
             "Generate investment score and recommendation."
@@ -87,10 +87,10 @@ AGENT_REGISTRY = {
     },
 
     "memo_agent": {
-        # "instance": MemoAgent(),
+        "instance": MemoAgent(),
         "domain": "reporting",
         "description": (
-            "Generate final investment memo."
+            "Generate final investment memo/report."
         ),
         "depends_on": [
             "investment_agent"
