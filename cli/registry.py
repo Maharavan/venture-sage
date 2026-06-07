@@ -1,0 +1,15 @@
+COMMANDS = {
+    "/help": "Show available commands",
+    "/clear": "Clear current session",
+    "/analyze": "Analyze a startup",
+    "/market": "Show market analysis",
+    "/competition": "Show competition analysis",
+    "/founder": "Show founder analysis",
+    "/finance": "Show finance analysis",
+    "/risk": "Show risk analysis",
+    "/investment": "Show investment recommendation",
+    "/memo": "Show final investment memo",
+    "/export": "Export report",
+    "/agents": "List registered agents",
+    "/exit": "Exit Venture Sage",
+}

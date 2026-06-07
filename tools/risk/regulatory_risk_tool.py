@@ -13,12 +13,8 @@ def search_regulatory_risk_tool(companies: List[str]) -> Dict[str, Any]:
         exa = ExaService()
         results = {}
         for company in companies:
-            query = f"""
-            {company} lawsuit regulatory fine compliance violation
-            GDPR CCPA data privacy government investigation
-            legal action penalty regulatory action
-            """
-            results[company] = exa.search_and_contents(query)
+            query = f"{company} regulatory compliance GDPR CCPA data privacy government policy legal"
+            results[company] = exa.search_and_contents(query, max_text_length=600)
         return {"status": "success", "company_count": len(companies), "results": results}
     except Exception as e:
         return {"status": "error", "message": str(e)}

@@ -1,6 +1,9 @@
+from typing import Dict
+
 from .base_agent import BaseAgent
 from pydantic import BaseModel, Field
 from .risk_agent import RiskAnalysis
+from utils.console import print_error, print_warning
 
 class InvestmentAnalysis(BaseModel):
     investment_strengths: list[str] = Field(default_factory=list)
@@ -18,6 +21,10 @@ class InvestmentAnalysis(BaseModel):
     investment_thesis: str
     executive_summary: str
 
+    @property
+    def summary(self) -> str:
+        return self.executive_summary
+
 class InvestmentAgent(BaseAgent):
     def __init__(self):
         markdown_prompt = self.load_prompt("investment_agent_prompt.md")
@@ -27,7 +34,14 @@ class InvestmentAgent(BaseAgent):
             response_model=InvestmentAnalysis,
         )
 
-    def analyze_investment(self, risk_details: RiskAnalysis) -> InvestmentAnalysis:
+    def analyze(self, context: Dict) -> InvestmentAnalysis:
         """Analyze the investment opportunity based on the provided description."""
-        response = self.run(risk_details.model_dump_json())
-        return response
+        risk_details = context.get("risk_agent")
+        if not isinstance(risk_details, RiskAnalysis):
+            print_warning(f"InvestmentAgent: expected RiskAnalysis, got {type(risk_details).__name__}, skipping.")
+            return None
+        try:
+            return self.run(risk_details.model_dump_json())
+        except Exception as e:
+            print_error(f"InvestmentAgent failed: {e}")
+            return None

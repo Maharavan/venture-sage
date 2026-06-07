@@ -1,6 +1,9 @@
+from typing import Dict
+
 from pydantic import BaseModel, Field
 from tools.market import MARKET_TOOLS
 from .base_agent import BaseAgent
+from utils.console import print_error, print_warning
 
 class MarketAnalysis(BaseModel):
     industry: str
@@ -38,7 +41,14 @@ class MarketAgent(BaseAgent):
             tools=MARKET_TOOLS,
         )
 
-    def analyze_market(self, market_description: str) -> MarketAnalysis:
+    def analyze(self, context: Dict) -> MarketAnalysis:
         """Analyze the market based on the provided description."""
-        response = self.run(market_description)
-        return response
+        retrieve_context = context.get("startup_description",  "")
+        if not retrieve_context:
+            print_warning("MarketAgent: no startup description in context, skipping.")
+            return None
+        try:
+            return self.run(retrieve_context)
+        except Exception as e:
+            print_error(f"MarketAgent failed: {e}")
+            return None

@@ -6,7 +6,7 @@ class Settings:
     model_name: str = "us.amazon.nova-pro-v1:0"
     region_name: str = "us-east-1"
     max_tokens: int = 4096
-    temperature: float = 0.7
+    temperature: float = 0.3
 
     def get_model(self):
         return BedrockModel(model_id=self.model_name,

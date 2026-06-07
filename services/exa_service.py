@@ -14,9 +14,9 @@ class ExaService(BaseService):
             for r in results.results
         ]
 
-    def search_and_contents(self, query: str, num_results: int = 5) -> List[Dict[str, Any]]:
+    def search_and_contents(self, query: str, num_results: int = 5, max_text_length: int = 3000) -> List[Dict[str, Any]]:
         results = self._client.search_and_contents(query, num_results=num_results, text=True)
         return [
-            {"title": r.title, "url": r.url, "text": r.text[:3000] if r.text else ""}
+            {"title": r.title, "url": r.url, "text": r.text[:max_text_length] if r.text else ""}
             for r in results.results
         ]

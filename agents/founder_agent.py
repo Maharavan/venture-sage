@@ -1,6 +1,9 @@
+from typing import Dict
+
 from pydantic import BaseModel, Field
 from tools.founder import FOUNDER_TOOLS
 from .base_agent import BaseAgent
+from utils.console import print_error, print_warning
 
 class FounderAnalysis(BaseModel):
     founders: list[str]
@@ -28,7 +31,14 @@ class FounderAgent(BaseAgent):
             tools=FOUNDER_TOOLS,
         )
 
-    def analyze_founder(self, founder_description: str) -> FounderAnalysis:
+    def analyze(self, context: Dict) -> FounderAnalysis:
         """Analyze the founder based on the provided description."""
-        response = self.run(founder_description)
-        return response
+        retrieve_context = context.get("startup_description",  "")
+        if not retrieve_context:
+            print_warning("FounderAgent: no startup description in context, skipping.")
+            return None
+        try:
+            return self.run(retrieve_context)
+        except Exception as e:
+            print_error(f"FounderAgent failed: {e}")
+            return None

@@ -1,6 +1,9 @@
+from typing import Dict
+
 from pydantic import BaseModel, Field
 from tools.finance import FINANCIAL_TOOLS
 from .base_agent import BaseAgent
+from utils.console import print_error, print_warning
 
 
 class FundingRound(BaseModel):
@@ -25,6 +28,10 @@ class FinanceAnalysis(BaseModel):
     investment_recommendation: str
     funding_summary: str
 
+    @property
+    def summary(self) -> str:
+        return self.funding_summary
+
 class FinancialAgent(BaseAgent):
     def __init__(self):
         markdown_prompt = self.load_prompt("financial_agent_prompt.md")
@@ -35,7 +42,14 @@ class FinancialAgent(BaseAgent):
             tools=FINANCIAL_TOOLS,
         )
 
-    def analyze_finance(self, funding_info: str) -> FinanceAnalysis:
+    def analyze(self, context: Dict) -> FinanceAnalysis:
         """Analyze the financial data based on the provided funding info."""
-        response = self.run(funding_info)
-        return response
+        retrieve_context = context.get("startup_description",  "")
+        if not retrieve_context:
+            print_warning("FinancialAgent: no startup description in context, skipping.")
+            return None
+        try:
+            return self.run(retrieve_context)
+        except Exception as e:
+            print_error(f"FinancialAgent failed: {e}")
+            return None

@@ -16,10 +16,10 @@ def search_security_incidents_tool(companies: List[str], domains: List[str]) -> 
         hibp = HIBPService()
         results = {}
         for company, domain in zip(companies, domains):
-            query = f"{company} security breach data leak CVE vulnerability incident outage"
+            query = f"{company} cybersecurity posture security practices compliance certifications"
             results[company] = {
                 "breaches": hibp.check_domain_breaches(domain),
-                "security_incidents": exa.search_and_contents(query),
+                "security_incidents": exa.search_and_contents(query, max_text_length=600),
             }
         return {"status": "success", "company_count": len(companies), "results": results}
     except Exception as e:

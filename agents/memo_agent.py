@@ -1,6 +1,9 @@
+from typing import Dict
+
 from .base_agent import BaseAgent
 from .investment_agent import InvestmentAnalysis
 from pydantic import BaseModel
+from utils.console import print_error, print_warning
 
 
 class MemoReport(BaseModel):
@@ -17,6 +20,10 @@ class MemoReport(BaseModel):
     next_steps: list[str]
     conclusion: str
 
+    @property
+    def summary(self) -> str:
+        return self.executive_summary
+
 class MemoAgent(BaseAgent):
     def __init__(self):
         markdown_prompt = self.load_prompt("memo_agent_prompt.md")
@@ -26,7 +33,18 @@ class MemoAgent(BaseAgent):
             response_model=MemoReport,
         )
 
-    def generate_memo(self, investment_info: InvestmentAnalysis) -> MemoReport:
+    def analyze(self, context: Dict) -> MemoReport:
         """Generate an investment memo based on the provided analysis data."""
-        response = self.run(investment_info.model_dump_json())
-        return response
+        investment_details = context.get("investment_agent")
+
+        if not investment_details:
+            print_warning("MemoAgent: investment_agent result missing from context, skipping.")
+            return None
+        if not isinstance(investment_details, InvestmentAnalysis):
+            print_error(f"MemoAgent: expected InvestmentAnalysis, got {type(investment_details).__name__}.")
+            return None
+        try:
+            return self.run(investment_details.model_dump_json())
+        except Exception as e:
+            print_error(f"MemoAgent failed: {e}")
+            return None

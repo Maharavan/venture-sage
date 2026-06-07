@@ -1,6 +1,9 @@
+from typing import Dict
+
 from pydantic import BaseModel, Field
 from tools.competitor import COMPETITOR_TOOLS
 from .base_agent import BaseAgent
+from utils.console import print_error, print_warning
 
 class CompetitionAnalysis(BaseModel):
     competitors: list[str]
@@ -23,7 +26,14 @@ class CompetitorAgent(BaseAgent):
             tools=COMPETITOR_TOOLS,
         )
 
-    def analyze_market(self, market_description: str) -> CompetitionAnalysis:
+    def analyze(self, context: Dict) -> CompetitionAnalysis:
         """Analyze the market based on the provided description."""
-        response = self.run(market_description)
-        return response
+        retrieve_context = context.get("startup_description",  "")
+        if not retrieve_context:
+            print_warning("CompetitorAgent: no startup description in context, skipping.")
+            return None
+        try:
+            return self.run(retrieve_context)
+        except Exception as e:
+            print_error(f"CompetitorAgent failed: {e}")
+            return None
