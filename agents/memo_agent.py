@@ -1,3 +1,5 @@
+from typing import Dict
+
 from .base_agent import BaseAgent
 from .investment_agent import InvestmentAnalysis
 from pydantic import BaseModel
@@ -26,7 +28,11 @@ class MemoAgent(BaseAgent):
             response_model=MemoReport,
         )
 
-    def generate_memo(self, investment_info: InvestmentAnalysis) -> MemoReport:
+    def analyze(self, context: Dict) -> MemoReport:
         """Generate an investment memo based on the provided analysis data."""
-        response = self.run(investment_info.model_dump_json())
-        return response
+        risk_details = context.get("investment_agent","")
+
+        if risk_details and isinstance(risk_details,InvestmentAnalysis):
+            risk_details = risk_details.model_dump_json()
+            return self.run(risk_details)
+        return None

@@ -1,7 +1,8 @@
 from __future__ import annotations
 import boto3
 from botocore.exceptions import NoCredentialsError,ClientError
-from workflow.due_dilegence_workflow import DueDiligenceWorkflow
+from workflow.due_dilegence_workflow import due_diligence_workflow
+import asyncio
 
 def check_aws_credentials():
     try:
@@ -28,4 +29,4 @@ if __name__ == "__main__":
     if not check_aws_credentials():
         exit(1)
     print("AWS credentials check passed. You can proceed with running the application.")
-    DueDiligenceWorkflow().run(startup_description="Analyze Cursor AI a startup that provides a code search tool for developers. The tool uses AI to help developers find relevant code snippets and documentation quickly, improving their productivity and efficiency so that I can invest.")
+    asyncio.run(due_diligence_workflow(startup_description="Analyze Cursor AI a startup that provides a code search tool for developers. The tool uses AI to help developers find relevant code snippets and documentation quickly, improving their productivity and efficiency so that I can invest."))

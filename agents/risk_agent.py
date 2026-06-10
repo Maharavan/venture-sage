@@ -1,4 +1,6 @@
-from agents.base_agent import BaseAgent
+from typing import Dict
+
+from .base_agent import BaseAgent
 from tools.risk import RISK_TOOLS
 from pydantic import BaseModel, Field
 from .market_agent import MarketAnalysis
@@ -30,16 +32,29 @@ class RiskAgent(BaseAgent):
             tools=RISK_TOOLS,
         )
 
-    def analyze_risk(self, market_details: MarketAnalysis, competitor_details: CompetitionAnalysis, financial_details: FinanceAnalysis,
-                     founder_details: FounderAnalysis) -> RiskAnalysis:
+    def analyze(self, context: Dict) -> RiskAnalysis:
         """Analyze the risk profile based on the provided description."""
         
+        market_details = context.get("market_agent","")
+        competitor_details = context.get("competition_agent","")
+        founder_details = context.get("founder_agent","")
+        financial_details = context.get("finance_agent","")
+
+        if isinstance(market_details,MarketAnalysis):
+            market_details = market_details.model_dump_json()
+        if isinstance(competitor_details,CompetitionAnalysis):
+            competitor_details = competitor_details.model_dump_json()
+        if isinstance(founder_details,FounderAnalysis):
+            founder_details = founder_details.model_dump_json()
+        if isinstance(financial_details,FinanceAnalysis):
+            financial_details = financial_details.model_dump_json()
+
         multi_query = f"""
         
-        Market Agent: {market_details.model_dump_json()}
-        Competitor Agent: {competitor_details.model_dump_json()}
-        Founder Agent: {founder_details.model_dump_json()}
-        Financial Agent: {financial_details.model_dump_json()}
+        Market Agent: {market_details}
+        Competitor Agent: {competitor_details}
+        Founder Agent: {founder_details}
+        Financial Agent: {financial_details}
 
         """
         response = self.run(multi_query)

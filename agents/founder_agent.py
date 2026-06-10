@@ -1,3 +1,5 @@
+from typing import Dict
+
 from pydantic import BaseModel, Field
 from tools.founder import FOUNDER_TOOLS
 from .base_agent import BaseAgent
@@ -28,7 +30,9 @@ class FounderAgent(BaseAgent):
             tools=FOUNDER_TOOLS,
         )
 
-    def analyze_founder(self, founder_description: str) -> FounderAnalysis:
+    def analyze(self, context: Dict) -> FounderAnalysis:
         """Analyze the founder based on the provided description."""
-        response = self.run(founder_description)
-        return response
+        retrieve_context = context.get("supervisor_agent","")
+        if retrieve_context:
+            response = self.run(retrieve_context)
+            return response

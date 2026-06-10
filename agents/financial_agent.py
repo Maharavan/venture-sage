@@ -1,3 +1,5 @@
+from typing import Dict
+
 from pydantic import BaseModel, Field
 from tools.finance import FINANCIAL_TOOLS
 from .base_agent import BaseAgent
@@ -35,7 +37,9 @@ class FinancialAgent(BaseAgent):
             tools=FINANCIAL_TOOLS,
         )
 
-    def analyze_finance(self, funding_info: str) -> FinanceAnalysis:
+    def analyze(self, context: Dict) -> FinanceAnalysis:
         """Analyze the financial data based on the provided funding info."""
-        response = self.run(funding_info)
-        return response
+        retrieve_context = context.get("supervisor_agent","")
+        if retrieve_context:
+            response = self.run(retrieve_context)
+            return response

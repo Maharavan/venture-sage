@@ -1,3 +1,5 @@
+from typing import Dict
+
 from .base_agent import BaseAgent
 from pydantic import BaseModel, Field
 from .risk_agent import RiskAnalysis
@@ -27,7 +29,13 @@ class InvestmentAgent(BaseAgent):
             response_model=InvestmentAnalysis,
         )
 
-    def analyze_investment(self, risk_details: RiskAnalysis) -> InvestmentAnalysis:
+    def analyze(self, context: Dict) -> InvestmentAnalysis:
         """Analyze the investment opportunity based on the provided description."""
-        response = self.run(risk_details.model_dump_json())
+        
+        risk_details = context.get("risk_agent","")
+
+        if isinstance(risk_details,RiskAnalysis):
+            risk_details = risk_details.model_dump_json()
+        
+        response = self.run(risk_details)
         return response
