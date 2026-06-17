@@ -9,7 +9,7 @@ COMMANDS = {
     "/risk": "Show risk analysis",
     "/investment": "Show investment recommendation",
     "/memo": "Show final investment memo",
-    "/export": "Export report",
-    "/agents": "List registered agents",
-    "/exit": "Exit Venture Sage",
+    "/agents":      "List registered agents",
+    "/memo-export": "Export last memo as Markdown or JSON (e.g. /memo-export json)",
+    "/exit":        "Exit Venture Sage",
 }

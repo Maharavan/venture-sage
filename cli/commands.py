@@ -1,6 +1,9 @@
 """Command implementations and utilities for the AWS Strand CLI."""
 
 import asyncio
+import json
+from datetime import datetime
+from pathlib import Path
 from rich import box
 from rich.console import Console
 from rich.table import Table
@@ -12,7 +15,21 @@ from guardrails.input_guardrails import validate_startup_description
 AGENT_LABEL = "[bold magenta]agent >[/bold magenta]"
 _input_console = Console()
 
-_last_agent: object | None = None
+_last_base_agent: object | None = None
+_last_context: dict | None = None
+
+
+def _error(msg: str) -> None:
+    console.print(AGENT_LABEL)
+    print_error(msg)
+
+def _info(msg: str) -> None:
+    console.print(AGENT_LABEL)
+    print_info(msg)
+
+def _success(msg: str) -> None:
+    console.print(AGENT_LABEL)
+    print_success(msg)
 
 def show_agents(args: str = "") -> None:
     """Display a table of enabled agents and their details."""
@@ -69,28 +86,29 @@ def run_agent_workflow(agent_name: str, args: str = "") -> None:
     global _last_agent
     description = args.strip() or _prompt_startup_description()
     if not description:
-        print_error("No startup description provided — aborting.")
+        _error("No startup description provided — aborting.")
         return
 
     guard = validate_startup_description(description)
     if not guard.passed:
-        print_error(f"Input rejected: {guard.reason}")
+        _error(f"Input rejected: {guard.reason}")
         return
 
-    print_info(f"Starting [bold]{agent_name}[/bold] workflow…")
+    _info(f"Starting {agent_name} workflow…")
     try:
-        asyncio.run(due_dil_workflow(agent_name, description))
-        _last_agent = get_agent(agent_name=agent_name).agent
-        print_success("Workflow complete.")
+        global _last_context, _last_base_agent
+        _last_context = asyncio.run(due_dil_workflow(agent_name, description))
+        _last_base_agent = get_agent(agent_name=agent_name)
+        _success("Workflow complete.")
     except Exception as e:
-        print_error(f"Workflow failed: {e}")
+        _error(f"Workflow failed: {e}")
 
 def chat_with_last_agent(message: str) -> None:
-    """Send a message to the most recently executed agent."""
-    if _last_agent is None:
-        print_error("No agent has run yet — use a command first.")
+    """Send a free-form follow-up message to the most recently executed agent."""
+    if _last_base_agent is None:
+        _error("No agent has run yet — use a command first.")
         return
-    _last_agent(message, structured_output_model=None)
+    _last_base_agent.chat(message)
 
 def analyze_startup(args: str = "") -> None:
     """Run the memo_agent workflow for startup analysis."""
@@ -101,3 +119,49 @@ def make_agent_command(agent_name: str):
     def handler(args: str = ""):
         run_agent_workflow(agent_name, args)
     return handler
+
+def export_memo_report(args: str = "") -> None:
+    """Export the last memo_agent result as Markdown and JSON files."""
+    if _last_context is None:
+        _error("No workflow has run yet — use /memo first.")
+        return
+
+    memo = _last_context.get("memo_agent")
+    if memo is None:
+        _error("No memo report found — run /memo to generate one.")
+        return
+
+    fmt = args.strip().lower() or "md"
+    if fmt not in ("md", "json"):
+        _error("Unsupported format — use: /memo-export md  or  /memo-export json")
+        return
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    out_dir = Path("exports")
+    out_dir.mkdir(exist_ok=True)
+
+    if fmt == "json":
+        path = out_dir / f"memo_{timestamp}.json"
+        path.write_text(memo.model_dump_json(indent=2))
+    else:
+        path = out_dir / f"memo_{timestamp}.md"
+        lines = [
+            f"# Investment Memo\n",
+            f"_Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}_\n",
+            f"---\n",
+            f"## Executive Summary\n{memo.executive_summary}\n",
+            f"## Market Analysis\n{memo.market_analysis}\n",
+            f"## Competition Analysis\n{memo.competition_analysis}\n",
+            f"## Founder Analysis\n{memo.founder_analysis}\n",
+            f"## Financial Analysis\n{memo.financial_analysis}\n",
+            f"## Risk Analysis\n{memo.risk_analysis}\n",
+            f"## Key Strengths\n" + "\n".join(f"- {s}" for s in memo.key_strengths) + "\n",
+            f"## Key Concerns\n" + "\n".join(f"- {c}" for c in memo.key_concerns) + "\n",
+            f"## Investment Thesis\n{memo.investment_thesis}\n",
+            f"## Recommendation\n{memo.recommendation}\n",
+            f"## Next Steps\n" + "\n".join(f"1. {s}" for s in memo.next_steps) + "\n",
+            f"## Conclusion\n{memo.conclusion}\n",
+        ]
+        path.write_text("\n".join(lines))
+
+    _success(f"Memo exported → {path}")

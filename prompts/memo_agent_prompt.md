@@ -71,6 +71,14 @@ Structure:
    * Final assessment
    * Key items to monitor
 
+You MUST populate every list field below with at least 3 specific, evidence-based items. Do not leave any list empty.
+
+Populate `key_strengths` (minimum 3 items) — the most compelling reasons to invest, drawn from all upstream analyses.
+
+Populate `key_concerns` (minimum 3 items) — the most significant concerns or risks, drawn from all upstream analyses.
+
+Populate `next_steps` (minimum 3 items) — concrete due diligence actions or conditions the investment committee should complete before committing capital.
+
 Requirements:
 
 * Write like a VC partner preparing an IC memo.

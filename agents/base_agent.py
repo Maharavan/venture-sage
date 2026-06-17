@@ -74,6 +74,16 @@ class BaseAgent(ABC):
         _stream_console.print()
         return response.structured_output
 
+    def chat(self, message: str) -> None:
+        """Send a free-form follow-up message without structured output constraints."""
+        saved = self.agent._default_structured_output_model
+        self.agent._default_structured_output_model = None
+        try:
+            self.agent(message)
+            _stream_console.print()
+        finally:
+            self.agent._default_structured_output_model = saved
+
     @classmethod
     def load_prompt(cls, prompt_name: str) -> str:
         """Load a prompt file by name from the repository prompts directory.

@@ -59,6 +59,16 @@ Assign a finance score between 0.0 and 10.0 using decimals for continuous precis
 3.0–4.9: Weak
 0.0–2.9: High Risk
 
+You MUST populate every list field below with at least 2 specific, evidence-based items. Do not leave any list empty.
+
+Populate `revenue_signals` (minimum 2 items) — specific indicators of revenue traction found (ARR, MRR, contracts, customer counts).
+
+Populate `burn_rate_signals` (minimum 2 items) — specific indicators of spend, hiring velocity, or runway estimates found.
+
+Populate `financial_strengths` (minimum 2 items) — specific financial positives drawn from the data.
+
+Populate `financial_risks` (minimum 2 items) — specific financial risks drawn from the data.
+
 Provide:
 
 * Funding summary

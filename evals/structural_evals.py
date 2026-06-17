@@ -51,9 +51,9 @@ def eval_investment_score_bounds() -> EvalResult:
     try:
         InvestmentAnalysis(
             investment_score=11.0,
-            score_category=ScoreCategory.STRONG,
+            score_category="Strong",
             score_rationale="test",
-            recommendation=InvestmentRecommendation.INVEST,
+            recommendation="INVEST",
             investment_thesis="test thesis",
             executive_summary="test summary that is long enough",
         )
@@ -69,7 +69,7 @@ def eval_investment_score_category_literal() -> EvalResult:
             investment_score=7.0,
             score_category="Amazing",  # type: ignore[arg-type]
             score_rationale="test rationale that is long enough",
-            recommendation=InvestmentRecommendation.INVEST,
+            recommendation="INVEST",
             investment_thesis="test thesis that is long enough",
             executive_summary="test executive summary that is long enough",
         )
@@ -83,7 +83,7 @@ def eval_investment_recommendation_literal() -> EvalResult:
     try:
         InvestmentAnalysis(
             investment_score=7.0,
-            score_category=ScoreCategory.STRONG,
+            score_category="Strong",
             score_rationale="test rationale that is long enough",
             recommendation="Buy Now",  # type: ignore[arg-type]
             investment_thesis="test thesis that is long enough",

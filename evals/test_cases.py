@@ -158,9 +158,9 @@ STRONG_INVESTMENT = InvestmentAnalysis(
         "Regulatory changes in key EU markets",
     ],
     investment_score=8.2,
-    score_category=ScoreCategory.STRONG,
+    score_category="Strong",
     score_rationale="Strong team, proven traction, large market, manageable risk — compelling Series A investment.",
-    recommendation=InvestmentRecommendation.INVEST,
+    recommendation="INVEST",
     investment_thesis="API-first payments platform targeting underserved SMBs with superior developer experience.",
     executive_summary="Compelling Series A investment with strong fundamentals, experienced founders, and clear path to $10M ARR.",
 )
@@ -266,9 +266,9 @@ WEAK_INVESTMENT = InvestmentAnalysis(
     opportunities=["Niche community focus could reduce competition"],
     threats=["TikTok", "Instagram Reels", "Snapchat", "Meta"],
     investment_score=1.8,
-    score_category=ScoreCategory.HIGH_RISK,
+    score_category="High Risk",
     score_rationale="Weak team, saturated market, no traction, and critical risk profile make this uninvestable at this stage.",
-    recommendation=InvestmentRecommendation.PASS,
+    recommendation="PASS",
     investment_thesis="No compelling thesis identified. Generic social app in a saturated market.",
     executive_summary="Pass. No differentiation, unknown team, no traction, and extreme competition with well-funded incumbents.",
 )

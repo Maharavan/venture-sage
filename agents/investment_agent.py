@@ -4,6 +4,10 @@ from typing import Dict, Literal
 from .base_agent import BaseAgent
 from pydantic import BaseModel, Field
 from .risk_agent import RiskAnalysis
+from .market_agent import MarketAnalysis
+from .competitor_agent import CompetitionAnalysis
+from .founder_agent import FounderAnalysis
+from .financial_agent import FinanceAnalysis
 from utils.console import print_error, print_warning
 
 
@@ -62,8 +66,30 @@ class InvestmentAgent(BaseAgent):
         if not isinstance(risk_details, RiskAnalysis):
             print_warning(f"InvestmentAgent: expected RiskAnalysis, got {type(risk_details).__name__}, skipping.")
             return None
+
+        market_details = context.get("market_agent", "")
+        competitor_details = context.get("competition_agent", "")
+        founder_details = context.get("founder_agent", "")
+        finance_details = context.get("finance_agent", "")
+
+        if isinstance(market_details, MarketAnalysis):
+            market_details = market_details.model_dump_json()
+        if isinstance(competitor_details, CompetitionAnalysis):
+            competitor_details = competitor_details.model_dump_json()
+        if isinstance(founder_details, FounderAnalysis):
+            founder_details = founder_details.model_dump_json()
+        if isinstance(finance_details, FinanceAnalysis):
+            finance_details = finance_details.model_dump_json()
+
+        multi_query = f"""
+        Market Agent: {market_details}
+        Competitor Agent: {competitor_details}
+        Founder Agent: {founder_details}
+        Financial Agent: {finance_details}
+        Risk Agent: {risk_details.model_dump_json()}
+        """
         try:
-            return self.run(risk_details.model_dump_json())
+            return self.run(multi_query)
         except Exception as e:
             print_error(f"InvestmentAgent failed: {e}")
             return None

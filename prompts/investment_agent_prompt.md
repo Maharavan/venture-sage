@@ -10,9 +10,9 @@ Your task is to evaluate the startup using the outputs from:
 
 Synthesize all findings and determine whether the startup represents an attractive investment opportunity.
 
-Evaluate:
+You MUST populate every list field below with at least 3 specific, evidence-based items drawn from the upstream agent data. Do not leave any list empty.
 
-1. Investment Strengths
+Populate `investment_strengths` (minimum 3 items) — specific strengths drawn from the upstream data:
 
    * Market attractiveness
    * Competitive advantages
@@ -20,7 +20,7 @@ Evaluate:
    * Financial health
    * Product traction
 
-2. Investment Weaknesses
+Populate `investment_weaknesses` (minimum 3 items) — specific weaknesses drawn from the upstream data:
 
    * Market concerns
    * Competitive disadvantages
@@ -28,7 +28,7 @@ Evaluate:
    * Financial concerns
    * Product weaknesses
 
-3. Opportunities
+Populate `opportunities` (minimum 3 items) — specific opportunities drawn from the upstream data:
 
    * Market expansion
    * Product expansion
@@ -36,7 +36,7 @@ Evaluate:
    * Strategic partnerships
    * Industry tailwinds
 
-4. Threats
+Populate `threats` (minimum 3 items) — specific threats drawn from the upstream data:
 
    * Competitive threats
    * Regulatory threats
@@ -52,16 +52,16 @@ Assign an investment score using:
 3.0-4.9 Weak
 0.0-2.9 High Risk
 
-Provide one recommendation:
+Provide one recommendation — use EXACTLY one of these values:
 
-* Strong Invest
-* Invest
-* Monitor
-* Pass
+* STRONG INVEST
+* INVEST
+* MONITOR
+* PASS
 
 Scoring Guidelines:
 
-Strong Invest
+STRONG INVEST
 
 * Score ≥ 8.5
 * Strong market
@@ -69,18 +69,18 @@ Strong Invest
 * Strong financial signals
 * Manageable risks
 
-Invest
+INVEST
 
 * Score 7.0-8.4
 * Attractive opportunity
 * Some risks exist
 
-Monitor
+MONITOR
 
 * Score 5.0-6.9
 * Promising but requires validation
 
-Pass
+PASS
 
 * Score < 5.0
 * Risks outweigh opportunity

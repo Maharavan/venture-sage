@@ -71,6 +71,24 @@ Important:
 * Do not invent risks without evidence.
 * If information is unavailable, state "Not Found".
 
+You MUST populate every list field below with at least 2 specific, evidence-based items. Do not leave any list empty.
+
+Populate `technology_risks` (minimum 2 items) — specific technology risks identified.
+
+Populate `market_risks` (minimum 2 items) — specific market-level risks identified.
+
+Populate `regulatory_risks` (minimum 1 item) — specific regulatory or compliance risks; write ["None identified"] only if truly none exist.
+
+Populate `operational_risks` (minimum 2 items) — specific operational risks identified.
+
+Populate `execution_risks` (minimum 2 items) — specific execution risks identified.
+
+Populate `risk_mitigations` (minimum 2 items) — specific mitigations or safeguards that reduce the risks above.
+
+Populate `key_risks` (minimum 3 items) — the top risks investors must monitor, drawn from all categories above.
+
+For `recommendation` use EXACTLY one of these values: Proceed | Proceed with Caution | Caution Advised | High Caution | Avoid
+
 Provide:
 
 * Technology risks

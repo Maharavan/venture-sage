@@ -50,7 +50,7 @@ def _run_suite(suite_name: str, results) -> SuiteReport:
 
 def _print_suite(report: SuiteReport) -> None:
     table = Table(
-        title=f"[bold]{report.name}[/bold]",
+        title=f"{report.name}",
         box=box.SIMPLE_HEAVY,
         border_style="bright_blue",
         title_justify="left",
@@ -75,7 +75,7 @@ def _print_suite(report: SuiteReport) -> None:
 
     console.print(table)
     console.print(
-        f"  [bold]{report.name}[/bold]: "
+        f"  {report.name}: "
         f"[green]{report.passed}/{report.total} passed[/green]"
         + (f"  [red]{report.failed} failed[/red]" if report.failed else "")
         + (f"  [yellow]{report.warned} with warnings[/yellow]" if report.warned else "")
@@ -94,7 +94,7 @@ def main(suite: str = "all") -> int:
         console.print("[bold cyan]Running structural evals…[/bold cyan]")
         reports.append(_run_suite("Structural Evals", run_structural_evals()))
 
-    console.rule("[bold]Eval Summary[/bold]")
+    console.rule("Eval Summary")
     for r in reports:
         _print_suite(r)
 

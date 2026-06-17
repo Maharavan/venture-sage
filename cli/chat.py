@@ -6,6 +6,7 @@ from cli.commands import (
     clear_current_session,
     analyze_startup,
     make_agent_command,
+    export_memo_report,
     chat_with_last_agent
 )
 
@@ -20,10 +21,11 @@ _AGENT_COMMANDS = {
 }
 
 _HANDLERS = {
-    "/agents":  show_agents,
-    "/help":    show_help,
-    "/clear":   clear_current_session,
-    "/analyze": analyze_startup,
+    "/agents":      show_agents,
+    "/help":        show_help,
+    "/clear":       clear_current_session,
+    "/analyze":     analyze_startup,
+    "/memo-export": export_memo_report,
     **{cmd: make_agent_command(agent) for cmd, agent in _AGENT_COMMANDS.items()},
 }
 

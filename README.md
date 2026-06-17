@@ -39,7 +39,7 @@ The result: institutional-quality analysis covering market sizing, competitive l
 | **7 Specialized Agents** | Market · Competitor · Founder · Finance · Risk · Investment · Memo |
 | **Staged Parallel Execution** | Stage 1 agents run concurrently via `asyncio.gather`; downstream stages receive merged context |
 | **Deterministic Routing** | BFS walk over the agent DAG — no supervisor LLM, no routing hallucinations |
-| **Cascade Prevention** | A failing Stage 1 agent skips all downstream dependents immediately |
+| **Cascade Prevention** | A downstream agent is skipped when all of its dependencies have failed — partial failures allow downstream agents to run with available context |
 | **Structured Output** | Every agent enforces a Pydantic v2 `response_model` with `Literal` types at the LLM boundary |
 | **Input Guardrails** | Startup descriptions are validated for length, readability, and prompt-injection patterns before entering the pipeline |
 | **Output Guardrails** | Agent outputs are checked for hollow fields and score-category coherence before propagating downstream |
@@ -133,7 +133,7 @@ sequenceDiagram
     WF->>RA: workflow_context (+ Stage 1 results)
     RA-->>WF: RiskAnalysis
 
-    WF->>IA: workflow_context (+ RiskAnalysis)
+    WF->>IA: workflow_context (+ Stage 1 results + RiskAnalysis)
     IA-->>WF: InvestmentAnalysis
 
     WF->>MEM: workflow_context (+ InvestmentAnalysis)
@@ -300,8 +300,8 @@ venture-sage/
 | **Competitor** | 1 | Research | `CompetitionAnalysis` | competitor_search, pricing, reviews, news |
 | **Founder** | 1 | Research | `FounderAnalysis` | founder_research, mentions |
 | **Finance** | 1 | Research | `FinanceAnalysis` | funding_history, revenue_signals, team_growth |
-| **Risk** | 2 | Synthesis | `RiskAnalysis` | regulatory_risk, security_incidents |
-| **Investment** | 3 | Scoring | `InvestmentAnalysis` | — (consumes Stage 1 + 2 context) |
+| **Risk** | 2 | Analysis | `RiskAnalysis` | regulatory_risk, security_incidents |
+| **Investment** | 3 | Analysis | `InvestmentAnalysis` | — (consumes Stage 1 + 2 context) |
 | **Memo** | 4 | Reporting | `MemoReport` | — (consumes full pipeline context) |
 
 All agents extend `BaseAgent`, which wraps the Strands `Agent` with a `BedrockModel`, enforces structured output via a Pydantic v2 `response_model`, and streams tokens in real-time via a custom callback handler. Score category and recommendation fields use `Literal` types — invalid values are rejected at the Pydantic boundary before they can propagate downstream.
@@ -414,32 +414,35 @@ FIRECRAWL_API_KEY=your_firecrawl_key
 
 ---
 
-## Expected Output
+## Demo
 
-Each agent streams its reasoning tokens in real-time, then displays a formatted summary panel:
+### `/help` — Available Commands
 
-```
-Info: market_agent thinking…
-The market for AI-powered developer tools is growing rapidly...
+![help](screenshots/help.png)
 
-┍━━━━━━━━━━━━━━━ market_agent ━━━━━━━━━━━━━━━┑
-│                                              │
-│  Large and fast-growing market. TAM ~$40B   │
-│  with 35% YoY growth. Strong tailwinds      │
-│  from AI adoption in enterprise dev teams.  │
-│                                             │
-┕━━━━━━━━━━━━━━━━━ summary ━━━━━━━━━━━━━━━━━━┙
-```
+### `/agents` — Registered Agent Pipeline
 
-The full `/analyze` pipeline produces:
+![agents](screenshots/agents.png)
 
-- **Market Analysis** — TAM/SAM/SOM, growth rate, key trends, market score (0–10)
-- **Competitive Landscape** — Top competitors, positioning, moat assessment
-- **Founder Profile** — Team credibility, domain expertise, prior exits
-- **Financial Health** — Funding rounds, burn rate, valuation signals, revenue indicators
-- **Risk Assessment** — Tech, market, regulatory, and operational risks (scored 0–10)
-- **Investment Recommendation** — SWOT matrix, investment score, verdict: `Strong Invest / Invest / Monitor / Pass`
-- **Investment Memo** — Executive-summary-ready report for LP/GP review
+### `/market` — Market Sizing & Trends
+
+<video src="screenshots/market_agent.mp4" controls width="100%"></video>
+
+### `/competition` — Competitive Landscape
+
+<video src="screenshots/competitor_agent.mp4" controls width="100%"></video>
+
+### `/finance` — Funding & Financial Health
+
+<video src="screenshots/finance_agent.mp4" controls width="100%"></video>
+
+### `/risk` — Risk Assessment
+
+<video src="screenshots/risk_agent.mp4" controls width="100%"></video>
+
+### `/analyze` — Full Pipeline → Investment Memo + Export report
+
+<video src="screenshots/analyze_memo.mp4" controls width="100%"></video>
 
 ---
 
@@ -501,7 +504,7 @@ Golden mock data for both a "strong startup" and a "weak startup" profile lives 
 `required_agents_for_execution` performs a BFS walk over the agent DAG to determine exactly which agents must run for any given target. This is fully deterministic and eliminates an extra LLM call for routing — no hallucinated shortcuts, no missed dependencies.
 
 **Cascade prevention on agent failure**
-If a Stage 1 agent fails, all downstream agents that depend on its output are skipped immediately. Running downstream agents with incomplete context would produce misleading results; it is safer to surface the gap explicitly.
+A downstream agent is only blocked when every one of its dependencies has failed — if at least one dependency succeeded, the agent runs with whatever context is available. This allows partial pipeline results to reach the investment and memo stages even when one Stage 1 agent is unavailable. An agent whose sole dependency failed (e.g. `investment_agent` when `risk_agent` fails) is skipped entirely and the gap is surfaced in the CLI.
 
 **Streaming via custom `callback_handler`**
 Strands' default `PrintingCallbackHandler` emits tool call noise alongside LLM tokens. The custom handler intercepts only `data` events (raw text tokens), giving a clean real-time stream with no internal SDK logs leaking into the terminal.

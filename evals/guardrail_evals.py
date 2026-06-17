@@ -157,9 +157,9 @@ def eval_output_warns_on_empty_lists() -> EvalResult:
         opportunities=[],
         threats=[],
         investment_score=5.0,
-        score_category=ScoreCategory.MODERATE,
+        score_category="Moderate",
         score_rationale="Average startup with no distinguishing features noted.",
-        recommendation=InvestmentRecommendation.MONITOR,
+        recommendation="MONITOR",
         investment_thesis="Generic thesis without specifics for this company.",
         executive_summary="A startup operating in a competitive space with no clear data available.",
     )
@@ -177,9 +177,9 @@ def eval_output_warns_on_incoherent_score() -> EvalResult:
         opportunities=["International expansion"],
         threats=["Regulation"],
         investment_score=9.5,
-        score_category=ScoreCategory.WEAK,  # deliberate mismatch
+        score_category="Weak",  # deliberate mismatch
         score_rationale="Excellent startup with outstanding metrics and team.",
-        recommendation=InvestmentRecommendation.STRONG_INVEST,
+        recommendation="STRONG INVEST",
         investment_thesis="Market-defining company with exceptional execution capability.",
         executive_summary="One of the strongest investments seen this year with clear path to dominance.",
     )

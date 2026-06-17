@@ -7,7 +7,7 @@ import asyncio
 async def run_agent(agent, workflow_context):
     try:
         instance = get_agent(agent)
-        print_info(f"[bold]{agent}[/bold] thinking…")
+        print_info(f"{agent} thinking…")
         result = await asyncio.to_thread(instance.analyze, workflow_context)
         if result is None:
             print_error(f"{agent} returned no result.")
