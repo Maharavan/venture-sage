@@ -43,3 +43,14 @@ Use a decimal score anywhere in the continuous range from 0.0 to 10.0.
 5.0-6.9   Elevated Market Opportunity
 7.0-8.9   High Market Opportunity
 9.0-10.0 Critical Market Opportunity
+
+Summary:
+
+Write a 2–4 sentence summary that covers every data point you collected:
+- Industry and market size (TAM, SAM, SOM when found)
+- Growth rate and market stage
+- Top customer segments and key trends
+- Opportunities and risks identified
+- Market score with a brief rationale
+
+End with one sentence on whether the market is attractive for investment.

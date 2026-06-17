@@ -13,7 +13,13 @@ class CompetitionAnalysis(BaseModel):
     barriers_to_entry: list[str]
     competition_intensity: str
     competition_score: float = Field(description="Score from 0.0 to 10.0", le=10.0, ge=0.0)
-    summary: str
+    summary: str = Field(
+        description=(
+            "2–4 sentences covering every data point collected: competitors identified, market leader, "
+            "competitive advantages and disadvantages, barriers to entry, competition intensity, and competition_score. "
+            "End with one sentence on the startup's competitive position."
+        )
+    )
 
 
 class CompetitorAgent(BaseAgent):

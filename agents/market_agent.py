@@ -28,7 +28,13 @@ class MarketAnalysis(BaseModel):
     )
 
     market_score: float = Field(description="Score from 0.0 to 10.0", le=10.0, ge=0.0)
-    summary: str
+    summary: str = Field(
+        description=(
+            "2–4 sentences covering every data point collected: industry, market size (TAM/SAM/SOM), "
+            "growth rate, market stage, top customer segments, key trends, opportunities, risks, and market_score. "
+            "End with one sentence on the market's investment attractiveness."
+        )
+    )
 
 
 class MarketAgent(BaseAgent):

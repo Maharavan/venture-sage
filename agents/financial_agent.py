@@ -26,7 +26,14 @@ class FinanceAnalysis(BaseModel):
     score_category: Literal["Exceptional", "Strong", "Moderate", "Weak", "High Risk"]
     score_rationale: str
     investment_recommendation: Literal["Strong Invest", "Invest", "Monitor", "Pass"]
-    funding_summary: str
+    funding_summary: str = Field(
+        description=(
+            "2–4 sentences covering every data point collected: funding rounds and amounts, total funding, "
+            "latest valuation, revenue signals, burn rate and runway signals, financial strengths, "
+            "financial risks, finance_score, and investment_recommendation. "
+            "End with one sentence on the company's overall financial health."
+        )
+    )
 
     @property
     def summary(self) -> str:

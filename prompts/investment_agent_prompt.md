@@ -106,3 +106,13 @@ Provide:
 * Recommendation
 * Investment thesis
 * Executive summary
+
+Executive Summary:
+
+Write a 3–5 sentence executive_summary that synthesises all upstream agent findings:
+- Market opportunity (size, growth, score) and competitive position (moat, intensity, score)
+- Founder quality (experience, exits, score) and financial health (funding, revenue, burn, score)
+- Risk profile (top risks, mitigations, score) and the most important SWOT points
+- Investment score, score category, and recommendation with a clear rationale
+
+End with one unambiguous sentence stating the investment verdict.

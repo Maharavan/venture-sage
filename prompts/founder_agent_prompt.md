@@ -43,3 +43,13 @@ Scoring:
 6.9-5.0: Average founder profile with moderate execution evidence
 4.9-3.0: Limited relevant experience or weak founder-market fit
 2.9-1.0: Significant founder risks or lack of relevant expertise
+
+Summary:
+
+Write a 2–4 sentence summary that covers every data point you collected:
+- Founders identified, their education, and professional experience
+- Domain and technical expertise, previous startups, and previous exits
+- Founder-market fit assessment and execution capability
+- Key strengths, key risks, and founder score with a brief rationale
+
+End with one sentence on the team's overall credibility and ability to execute.

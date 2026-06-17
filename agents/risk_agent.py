@@ -21,7 +21,14 @@ class RiskAnalysis(BaseModel):
     score_rationale: str
     key_risks: list[str] = Field(default_factory=list, description="Top risks investors should monitor")
     recommendation: Literal["Proceed", "Proceed with Caution", "Caution Advised", "High Caution", "Avoid"]
-    summary: str
+    summary: str = Field(
+        description=(
+            "2–4 sentences covering every risk category assessed: technology risks, market risks, "
+            "regulatory risks, operational risks, execution risks, mitigations identified, key risks, "
+            "risk_score, score_category, and recommendation. "
+            "End with one sentence on whether the overall risk profile is acceptable for investment."
+        )
+    )
 
 class RiskAgent(BaseAgent):
     def __init__(self):

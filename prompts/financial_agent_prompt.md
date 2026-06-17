@@ -69,3 +69,14 @@ Provide:
 * Investment recommendation
 
 If information is unavailable, explicitly state "Not Found" rather than making assumptions.
+
+Funding Summary:
+
+Write a 2–4 sentence funding_summary that covers every data point you collected:
+- All funding rounds, amounts raised, and lead investors
+- Total funding raised and latest valuation
+- Revenue signals (ARR/MRR, customer count, NRR) and burn rate / runway signals
+- Financial strengths and financial risks identified
+- Finance score, score category, and investment recommendation with a brief rationale
+
+End with one sentence on the company's overall financial health and fundability.

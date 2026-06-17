@@ -56,3 +56,13 @@ Use a continuous decimal range from 1.0 to 10.0.
 0.0-2.9: Highly saturated market with little defensibility
 
 If information is unavailable, explicitly state that it could not be verified.
+
+Summary:
+
+Write a 2–4 sentence summary that covers every data point you collected:
+- Competitors identified (direct and indirect) and the market leader
+- Competitive advantages and disadvantages of the startup
+- Barriers to entry and competition intensity
+- Competition score with a brief rationale
+
+End with one sentence on the startup's defensibility and competitive position.

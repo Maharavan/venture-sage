@@ -40,7 +40,10 @@ The result: institutional-quality analysis covering market sizing, competitive l
 | **Staged Parallel Execution** | Stage 1 agents run concurrently via `asyncio.gather`; downstream stages receive merged context |
 | **Deterministic Routing** | BFS walk over the agent DAG — no supervisor LLM, no routing hallucinations |
 | **Cascade Prevention** | A failing Stage 1 agent skips all downstream dependents immediately |
-| **Structured Output** | Every agent enforces a Pydantic v2 `response_model` at the LLM boundary |
+| **Structured Output** | Every agent enforces a Pydantic v2 `response_model` with `Literal` types at the LLM boundary |
+| **Input Guardrails** | Startup descriptions are validated for length, readability, and prompt-injection patterns before entering the pipeline |
+| **Output Guardrails** | Agent outputs are checked for hollow fields and score-category coherence before propagating downstream |
+| **Offline Evals** | Two eval suites (guardrail + structural) run without LLM calls — schema constraints, cross-agent consistency, golden-data checks |
 | **Prompt Caching** | Bedrock `CacheConfig(strategy="auto")` cuts latency and cost on repeated runs |
 | **Streaming Tokens** | Custom `callback_handler` streams raw LLM tokens — zero SDK noise |
 | **Context Summarization** | `SummarizingConversationManager` compresses overflow instead of dropping turns |
@@ -223,7 +226,7 @@ venture-sage/
 ├── app.py                          # Entry point — credential check + CLI launch
 │
 ├── workflow/
-│   └── due_dilegence_workflow.py   # BFS orchestrator — stages + cascade prevention
+│   └── due_diligence_workflow.py   # BFS orchestrator — stages + cascade prevention
 │
 ├── agents/
 │   ├── base_agent.py               # Abstract base — Strands Agent + streaming callback
@@ -234,6 +237,16 @@ venture-sage/
 │   ├── risk_agent.py               # Multi-dimensional risk scoring
 │   ├── investment_agent.py         # SWOT + investment recommendation
 │   └── memo_agent.py               # Final investment memo generation
+│
+├── guardrails/
+│   ├── input_guardrails.py         # Validates startup descriptions (length, injection patterns)
+│   └── output_guardrails.py        # Validates agent outputs (completeness, score coherence)
+│
+├── evals/
+│   ├── run_evals.py                # Rich CLI runner — python -m evals.run_evals
+│   ├── guardrail_evals.py          # Offline tests for input/output guardrail accept/reject
+│   ├── structural_evals.py         # Schema constraint + cross-agent consistency evals
+│   └── test_cases.py               # Golden mock data for strong/weak startup profiles
 │
 ├── cli/
 │   ├── chat.py                     # Interactive chat loop — command dispatch
@@ -291,7 +304,7 @@ venture-sage/
 | **Investment** | 3 | Scoring | `InvestmentAnalysis` | — (consumes Stage 1 + 2 context) |
 | **Memo** | 4 | Reporting | `MemoReport` | — (consumes full pipeline context) |
 
-All agents extend `BaseAgent`, which wraps the Strands `Agent` with a `BedrockModel`, enforces structured output via a Pydantic v2 `response_model`, and streams tokens in real-time via a custom callback handler.
+All agents extend `BaseAgent`, which wraps the Strands `Agent` with a `BedrockModel`, enforces structured output via a Pydantic v2 `response_model`, and streams tokens in real-time via a custom callback handler. Score category and recommendation fields use `Literal` types — invalid values are rejected at the Pydantic boundary before they can propagate downstream.
 
 ---
 
@@ -377,7 +390,7 @@ cd venture-sage
 # Install with uv (recommended)
 uv sync
 
-# Or with pip
+# Or with pip (requirements.txt is pinned and generated from uv.lock)
 pip install -r requirements.txt
 ```
 
@@ -395,7 +408,7 @@ AWS_DEFAULT_REGION=us-east-1
 EXA_API_KEY=your_exa_key
 TAVILY_API_KEY=your_tavily_key
 SERPAPI_API_KEY=your_serpapi_key
-NEWSAPI_API_KEY=your_newsapi_key
+NEWSAPI_KEY=your_newsapi_key
 FIRECRAWL_API_KEY=your_firecrawl_key
 ```
 
@@ -430,6 +443,58 @@ The full `/analyze` pipeline produces:
 
 ---
 
+## Guardrails
+
+### Input Guardrails
+
+Before any startup description enters the agent pipeline, `guardrails/input_guardrails.py` enforces:
+
+| Check | Rule |
+|---|---|
+| **Empty / whitespace** | Rejected immediately |
+| **Min length** | Must be ≥ 20 characters |
+| **Max length** | Must be ≤ 5 000 characters |
+| **Readability** | Must contain at least one alphabetic character |
+| **Prompt injection** | 12 regex patterns block `ignore previous instructions`, `system prompt`, `act as`, `pretend you are`, `always score this a 10`, etc. |
+
+If validation fails, the CLI prints a clear error and aborts — no agent is invoked.
+
+### Output Guardrails
+
+After each agent returns a Pydantic model, `guardrails/output_guardrails.py` checks for:
+
+- **Hollow fields** — string fields shorter than 15 characters (excluding short-by-design labels like `recommendation` and `round_name`)
+- **Empty lists** — any list field that came back empty (the agent likely failed to gather data)
+- **Score–category coherence** — warns when a numeric score contradicts its label (e.g. `investment_score=9.5` paired with `score_category="Weak"`)
+
+Warnings are non-blocking and surface in logs. Errors cause the workflow to treat the agent as failed and trigger cascade prevention.
+
+---
+
+## Evals
+
+Run all offline eval suites (no LLM calls required):
+
+```bash
+# Run all suites
+python -m evals.run_evals
+
+# Run only guardrail evals
+python -m evals.run_evals --suite guardrail
+
+# Run only structural evals
+python -m evals.run_evals --suite structural
+```
+
+| Suite | What it tests |
+|---|---|
+| **Guardrail** | Input guardrail blocks empty, short, long, and injected descriptions; output guardrail warns on hollow/incoherent outputs |
+| **Structural** | Pydantic `Literal` / `ge` / `le` constraints are enforced; score ranges match profile strength in golden data; cross-agent scores are internally consistent |
+
+Golden mock data for both a "strong startup" and a "weak startup" profile lives in `evals/test_cases.py` and is shared across suites.
+
+---
+
 ## Key Design Decisions
 
 **BFS dependency resolution over a supervisor agent**
@@ -449,6 +514,15 @@ Agents are instantiated once at registry load time to avoid repeated model initi
 
 **Pydantic `response_model` on every agent**
 Each agent's output is consumed as a typed input by the next stage. Enforcing the schema at the LLM boundary prevents silent data loss, missing fields, or hallucinated key names from propagating through the pipeline undetected.
+
+**`Literal` types for enumerated fields**
+`score_category` and `recommendation` on `RiskAnalysis`, `FinanceAnalysis`, and `InvestmentAnalysis` are `Literal[...]` rather than plain `str`. Pydantic rejects any value not in the allowed set at instantiation time, so an LLM that writes `"Buy Now"` instead of `"INVEST"` causes an immediate validation error rather than a silent downstream mismatch.
+
+**Input guardrails at the CLI boundary**
+Prompt-injection patterns (and simple length / readability checks) are applied in `cli/commands.py` before the workflow is invoked. Blocking at the boundary means no agent is loaded, no Bedrock call is made, and no partial pipeline state is left in an undefined condition.
+
+**Offline evals for schema and guardrail correctness**
+`evals/` contains two suites that run without any LLM calls. Structural evals use golden mock data to verify that Pydantic constraints, score ranges, and cross-agent consistency rules hold. Guardrail evals verify that the input and output guardrails accept and reject exactly the cases they should. These run in CI and catch regressions in model definitions and guardrail patterns before they reach production.
 
 ---
 

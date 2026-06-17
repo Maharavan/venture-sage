@@ -34,7 +34,14 @@ class InvestmentAnalysis(BaseModel):
     score_rationale: str
     recommendation: InvestmentRecommendation
     investment_thesis: str
-    executive_summary: str
+    executive_summary: str = Field(
+        description=(
+            "3–5 sentences synthesising all upstream agent findings: market opportunity and score, "
+            "competitive position and score, founder quality and score, financial health and score, "
+            "risk profile and score, top SWOT points, investment_score, score_category, and recommendation. "
+            "End with a clear one-sentence investment verdict."
+        )
+    )
 
     @property
     def summary(self) -> str:

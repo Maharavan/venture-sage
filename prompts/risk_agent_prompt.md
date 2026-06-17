@@ -83,4 +83,14 @@ Provide:
 * Risk score
 * Score rationale
 * Recommendation
-* Executive summary
+* Summary
+
+Summary:
+
+Write a 2–4 sentence summary that covers every risk category assessed:
+- Technology, market, regulatory, operational, and execution risks found
+- Mitigations identified and their effectiveness
+- Top key risks investors must monitor
+- Risk score, score category, and recommendation with a brief rationale
+
+End with one sentence on whether the overall risk profile is acceptable for investment.
