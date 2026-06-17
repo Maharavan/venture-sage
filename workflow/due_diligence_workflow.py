@@ -1,5 +1,6 @@
 from config.agent_registry import get_agent, required_agents_for_execution, AGENT_REGISTRY
 from utils.console import print_error, print_info, print_warning, print_agent_summary
+from guardrails.output_guardrails import validate_output_quality
 import asyncio
 
 
@@ -11,6 +12,16 @@ async def run_agent(agent, workflow_context):
         if result is None:
             print_error(f"{agent} returned no result.")
             return agent, None
+
+        quality = validate_output_quality(result, agent)
+        for warning in quality.warnings:
+            print_warning(warning)
+        for error in quality.errors:
+            print_error(error)
+        if not quality.passed:
+            print_error(f"{agent} output failed quality check — treating as failed.")
+            return agent, None
+
         summary = getattr(result, "summary", None)
         if summary:
             print_agent_summary(agent, summary)

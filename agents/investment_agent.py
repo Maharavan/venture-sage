@@ -1,9 +1,26 @@
-from typing import Dict
+from enum import Enum
+from typing import Dict, Literal
 
 from .base_agent import BaseAgent
 from pydantic import BaseModel, Field
 from .risk_agent import RiskAnalysis
 from utils.console import print_error, print_warning
+
+
+InvestmentRecommendation = Literal[
+    "STRONG INVEST",
+    "INVEST",
+    "MONITOR",
+    "PASS",
+]
+
+ScoreCategory = Literal[
+    "Exceptional",
+    "Strong",
+    "Moderate",
+    "Weak",
+    "High Risk",
+]
 
 class InvestmentAnalysis(BaseModel):
     investment_strengths: list[str] = Field(default_factory=list)
@@ -11,13 +28,11 @@ class InvestmentAnalysis(BaseModel):
     opportunities: list[str] = Field(default_factory=list)
     threats: list[str] = Field(default_factory=list)
     investment_score: float = Field(description="Score from 0.0 to 10.0", le=10.0, ge=0.0)
-    score_category: str = Field(
+    score_category: ScoreCategory = Field(
         description="Exceptional, Strong, Moderate, Weak, High Risk"
     )
     score_rationale: str
-    recommendation: str = Field(
-        description="Strong Invest, Invest, Monitor, Pass"
-    )
+    recommendation: InvestmentRecommendation
     investment_thesis: str
     executive_summary: str
 

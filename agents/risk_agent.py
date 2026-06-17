@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Literal
 
 from .base_agent import BaseAgent
 from tools.risk import RISK_TOOLS
@@ -17,10 +17,10 @@ class RiskAnalysis(BaseModel):
     execution_risks: list[str] = Field(default_factory=list)
     risk_mitigations: list[str] = Field(default_factory=list)
     risk_score: float = Field(description="Risk score from 0.0 to 10.0", le=10.0, ge=0.0)
-    score_category: str = Field(description="Low Risk, Moderate Risk, Elevated Risk, High Risk, Critical Risk")
+    score_category: Literal["Low Risk", "Moderate Risk", "Elevated Risk", "High Risk", "Critical Risk"]
     score_rationale: str
     key_risks: list[str] = Field(default_factory=list, description="Top risks investors should monitor")
-    recommendation: str
+    recommendation: Literal["Proceed", "Proceed with Caution", "Caution Advised", "High Caution", "Avoid"]
     summary: str
 
 class RiskAgent(BaseAgent):

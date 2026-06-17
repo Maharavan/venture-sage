@@ -7,6 +7,7 @@ from rich.table import Table
 from utils.console import console, print_error, print_info, print_success
 from config.agent_registry import AGENT_REGISTRY, get_agent
 from cli.registry import COMMANDS
+from guardrails.input_guardrails import validate_startup_description
 
 AGENT_LABEL = "[bold magenta]agent >[/bold magenta]"
 _input_console = Console()
@@ -64,11 +65,16 @@ def _prompt_startup_description() -> str | None:
 
 def run_agent_workflow(agent_name: str, args: str = "") -> None:
     """Execute the due diligence workflow for a named agent."""
-    from workflow.due_dilegence_workflow import due_dil_workflow
+    from workflow.due_diligence_workflow import due_dil_workflow
     global _last_agent
     description = args.strip() or _prompt_startup_description()
     if not description:
         print_error("No startup description provided — aborting.")
+        return
+
+    guard = validate_startup_description(description)
+    if not guard.passed:
+        print_error(f"Input rejected: {guard.reason}")
         return
 
     print_info(f"Starting [bold]{agent_name}[/bold] workflow…")

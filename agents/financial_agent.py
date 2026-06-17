@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Literal
 
 from pydantic import BaseModel, Field
 from tools.finance import FINANCIAL_TOOLS
@@ -23,9 +23,9 @@ class FinanceAnalysis(BaseModel):
     financial_strengths: list[str] = Field(default_factory=list)
     financial_risks: list[str] = Field(default_factory=list)
     finance_score: float = Field(description="Score from 0.0 to 10.0", le=10.0, ge=0.0)
-    score_category: str = Field(description="Exceptional, Strong, Moderate, Weak, High Risk")
+    score_category: Literal["Exceptional", "Strong", "Moderate", "Weak", "High Risk"]
     score_rationale: str
-    investment_recommendation: str
+    investment_recommendation: Literal["Strong Invest", "Invest", "Monitor", "Pass"]
     funding_summary: str
 
     @property
