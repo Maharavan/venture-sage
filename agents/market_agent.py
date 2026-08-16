@@ -43,6 +43,8 @@ class MarketAgent(BaseAgent):
 
         super().__init__(
             system_prompt=markdown_prompt,
+            agent_name="MarketAgent",
+            startup_description="Analyze market size, growth rate, trends and opportunities for the given startup.",
             response_model=MarketAnalysis,
             tools=MARKET_TOOLS,
         )

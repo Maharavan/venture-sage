@@ -9,6 +9,4 @@ MARKET_TOOLS = [
     get_market_trends,
     get_market_research_tool
 ]
-__all__ = [
-    MARKET_TOOLS
-]
+__all__ = ["MARKET_TOOLS"]

@@ -1,13 +1,24 @@
 from rich import box
-from rich.console import Console, Group
+from rich.console import Console
 from rich.markdown import Markdown
 from rich.markup import escape
 from rich.panel import Panel
 import pyfiglet
 
 console = Console()
+AGENT_LABEL = "[bold magenta]agent >[/bold magenta]"
 
+def _error(msg: str) -> None:
+    console.print(AGENT_LABEL)
+    print_error(msg)
 
+def _info(msg: str) -> None:
+    console.print(AGENT_LABEL)
+    print_info(msg)
+
+def _success(msg: str) -> None:
+    console.print(AGENT_LABEL)
+    print_success(msg)
 def print_error(message: str) -> None:
     console.print(f"\n[bold red]Error:[/bold red] [red]{escape(message)}[/red]")
 

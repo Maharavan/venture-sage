@@ -1,35 +1,22 @@
 """Command implementations and utilities for the AWS Strand CLI."""
 
 import asyncio
-import json
 from datetime import datetime
 from pathlib import Path
 from rich import box
 from rich.console import Console
 from rich.table import Table
-from utils.console import console, print_error, print_info, print_success
+from utils.console import console, AGENT_LABEL, _error, _info, _success
 from config.agent_registry import AGENT_REGISTRY, get_agent
 from cli.registry import COMMANDS
-from guardrails.input_guardrails import validate_startup_description
 
-AGENT_LABEL = "[bold magenta]agent >[/bold magenta]"
 _input_console = Console()
 
 _last_base_agent: object | None = None
 _last_context: dict | None = None
 
 
-def _error(msg: str) -> None:
-    console.print(AGENT_LABEL)
-    print_error(msg)
 
-def _info(msg: str) -> None:
-    console.print(AGENT_LABEL)
-    print_info(msg)
-
-def _success(msg: str) -> None:
-    console.print(AGENT_LABEL)
-    print_success(msg)
 
 def show_agents(args: str = "") -> None:
     """Display a table of enabled agents and their details."""
@@ -83,16 +70,7 @@ def _prompt_startup_description() -> str | None:
 def run_agent_workflow(agent_name: str, args: str = "") -> None:
     """Execute the due diligence workflow for a named agent."""
     from workflow.due_diligence_workflow import due_dil_workflow
-    global _last_agent
     description = args.strip() or _prompt_startup_description()
-    if not description:
-        _error("No startup description provided — aborting.")
-        return
-
-    guard = validate_startup_description(description)
-    if not guard.passed:
-        _error(f"Input rejected: {guard.reason}")
-        return
 
     _info(f"Starting {agent_name} workflow…")
     try:

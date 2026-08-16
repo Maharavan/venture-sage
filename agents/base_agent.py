@@ -14,6 +14,7 @@ from strands import Agent
 from strands.agent.conversation_manager import SummarizingConversationManager
 from config.settings import settings
 from rich.console import Console
+from hooks.hooks import ObservabilityPlugin
 
 # Suppress all SDK/transport logging before any agent is constructed.
 for _log in ["strands", "botocore", "boto3", "httpx", "urllib3",
@@ -42,7 +43,9 @@ class BaseAgent(ABC):
     def __init__(
         self,
         system_prompt: str,
-        response_model: type[BaseModel],
+        agent_name: str,
+        startup_description: str = "",
+        response_model: type[BaseModel] = None,
         tools: list[Any] | None = None,
     ):
         """Construct the agent.
@@ -52,15 +55,22 @@ class BaseAgent(ABC):
             response_model: Pydantic model type for structured outputs.
             tools: Optional list of tool objects to register with the agent.
         """
+        if getattr(self, "_initialized", False):
+            return
+        self._initialized = True
         self.system_prompt = system_prompt
         self.response_model = response_model
         self.model = settings.get_model()
         self.tools = tools or []
+        self.agent_name = agent_name
+        self.startup_description = startup_description
+        self._log_guard = ObservabilityPlugin(agent_name=agent_name, startup_description=startup_description)
         self.agent = Agent(
             system_prompt=self.system_prompt,
             model=self.model,
             structured_output_model=self.response_model,
             tools=self.tools,
+            hooks=[self._log_guard],
             callback_handler=_stream_callback,
             conversation_manager=SummarizingConversationManager(
                 summary_ratio=0.3,

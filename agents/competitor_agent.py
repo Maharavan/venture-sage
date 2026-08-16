@@ -28,6 +28,8 @@ class CompetitorAgent(BaseAgent):
 
         super().__init__(
             system_prompt=markdown_prompt,
+            agent_name="CompetitorAgent",
+            startup_description="Analyze competitors, market positioning and differentiation for the given startup.",
             response_model=CompetitionAnalysis,
             tools=COMPETITOR_TOOLS,
         )

@@ -9,6 +9,4 @@ COMPETITOR_TOOLS = [
     search_competitor_pricing_tool,
     get_product_reviews_tool,
 ]
-__all__ = [
-    COMPETITOR_TOOLS
-]
+__all__ = ["COMPETITOR_TOOLS"]

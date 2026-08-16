@@ -34,6 +34,8 @@ class FounderAgent(BaseAgent):
 
         super().__init__(
             system_prompt=markdown_prompt,
+            agent_name="FounderAgent",
+            startup_description="Analyze founders, their experience, domain expertise, and execution capability.",
             response_model=FounderAnalysis,
             tools=FOUNDER_TOOLS,
         )

@@ -30,6 +30,8 @@ class MemoAgent(BaseAgent):
 
         super().__init__(
             system_prompt=markdown_prompt,
+            agent_name="MemoAgent",
+            startup_description="Generate a final investment memo synthesising all prior due diligence agent outputs.",
             response_model=MemoReport,
         )
 

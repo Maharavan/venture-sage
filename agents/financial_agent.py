@@ -45,6 +45,8 @@ class FinancialAgent(BaseAgent):
 
         super().__init__(
             system_prompt=markdown_prompt,
+            agent_name="FinancialAgent",
+            startup_description="Analyze funding history, valuation, revenue signals, and burn rate for the given startup.",
             response_model=FinanceAnalysis,
             tools=FINANCIAL_TOOLS,
         )

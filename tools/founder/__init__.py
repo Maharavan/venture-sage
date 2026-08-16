@@ -5,6 +5,4 @@ FOUNDER_TOOLS = [
     get_founder_background,
     get_founder_mentions_tool
 ]
-__all__ = [
-    FOUNDER_TOOLS
-]
+__all__ = ["FOUNDER_TOOLS"]

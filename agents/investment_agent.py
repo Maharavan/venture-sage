@@ -57,6 +57,8 @@ class InvestmentAgent(BaseAgent):
 
         super().__init__(
             system_prompt=markdown_prompt,
+            agent_name="InvestmentAgent",
+            startup_description="Generate investment score, SWOT analysis and recommendation based on all prior agent outputs.",
             response_model=InvestmentAnalysis,
         )
 

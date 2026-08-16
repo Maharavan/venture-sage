@@ -7,6 +7,4 @@ FINANCIAL_TOOLS = [
     get_revenue_signals_tool,
     get_team_growth_tool,
 ]
-__all__ = [
-    FINANCIAL_TOOLS
-]
+__all__ = ["FINANCIAL_TOOLS"]

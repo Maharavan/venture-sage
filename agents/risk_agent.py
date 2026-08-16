@@ -36,6 +36,8 @@ class RiskAgent(BaseAgent):
 
         super().__init__(
             system_prompt=markdown_prompt,
+            agent_name="RiskAgent",
+            startup_description="Assess technology, market, regulatory, operational and execution risks for the given startup.",
             response_model=RiskAnalysis,
             tools=RISK_TOOLS,
         )

@@ -5,6 +5,4 @@ RISK_TOOLS = [
     search_regulatory_risk_tool,
     search_security_incidents_tool,
 ]
-__all__ = [
-    RISK_TOOLS
-]
+__all__ = ["RISK_TOOLS"]
