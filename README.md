@@ -20,6 +20,8 @@
 
 *Know before you invest.*
 
+📝 **[Read the architecture deep dive on AWS Builder →](https://builder.aws.com/content/3I0bZUfcKudvhjVZ7iUO9bIYOYI/how-i-built-a-7-agent-investment-research-system-with-aws-strands-and-bedrock)**
+
 </div>
 
 ---
