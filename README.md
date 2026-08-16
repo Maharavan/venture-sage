@@ -332,6 +332,7 @@ Once inside the interactive CLI:
 | `/memo <description>` | Full memo generation (equivalent to `/analyze`) |
 | `/agents` | List all registered agents with stage and domain |
 | `/help` | Show all available commands |
+| `/memo-export` | Export last memo as Markdown or JSON (e.g. /memo-export json , /memo-export md)  
 | `/clear` | Clear the terminal |
 | `/exit` | Exit VENTURE SAGE |
 
@@ -442,7 +443,7 @@ FIRECRAWL_API_KEY=your_firecrawl_key
 
 <video src="screenshots/risk_agent.mp4" controls width="100%"></video>
 
-### `/analyze` — Full Pipeline → Investment Memo + Export report
+### `/analyze` & `/memo-export md` & `/memo-export json`  — Full Pipeline → Investment Memo + Export report
 
 <video src="screenshots/analyze_memo.mp4" controls width="100%"></video>
 
